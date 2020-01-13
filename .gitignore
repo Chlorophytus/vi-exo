@@ -1,6 +1,6 @@
 
-# Created by https://www.gitignore.io/api/c,c++,code
-# Edit at https://www.gitignore.io/?templates=c,c++,code
+# Created by https://www.gitignore.io/api/c,c++,code,cmake
+# Edit at https://www.gitignore.io/?templates=c,c++,code,cmake
 
 ### C ###
 # Prerequisites
@@ -75,6 +75,23 @@ dkms.conf
 
 # Executables
 
+### CMake ###
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
+
+### CMake Patch ###
+# External projects
+*-prefix/
+
 ### Code ###
 .vscode/*
 !.vscode/settings.json
@@ -82,6 +99,5 @@ dkms.conf
 !.vscode/launch.json
 !.vscode/extensions.json
 
-# End of https://www.gitignore.io/api/c,c++,code
-
-./viexo
+# End of https://www.gitignore.io/api/c,c++,code,cmake
+viexo
