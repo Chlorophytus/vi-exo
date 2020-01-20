@@ -5,58 +5,71 @@ module viexo_zynq
     input wire tclk,
     // HAS to be 23.75MHz
     input wire pclk,
-    // AXI SIGNALLING (HAS to be AXI bus speed, but we will use CDC tactics)
+    // MMIO SIGNALLING
     input wire aclk,
     input wire aresetn,
-    input wire [31:0] awaddr,
-    input wire [2:0] awsize,
-    input wire [7:0] awlen,
-    input wire [1:0] awburst,
-    input wire awvalid,
-    output wire awready,
-    input wire [31:0] wdata,
-    input wire wvalid,
-    output wire wready,
-    input wire wlast,
-    output wire [1:0] bresp,
-    output wire bvalid,
-    input wire bready,
+    input wire [12:0] wen_addr,
+    input wire [7:0] wch,
     
     output wire hdmi_tx_clk_n,
     output wire hdmi_tx_clk_p,
     output wire [2:0] hdmi_tx_d_n,
-    output wire [2:0] hdmi_tx_d_p);
+    output wire [2:0] hdmi_tx_d_p,
+    output wire [3:0] led);
     wire hblank;
     wire vblank;    
     wire hsync;
     wire vsync;
     wire [2:0] tmds;
+    wire [11:0] x;
+    wire [11:0] y;
+    wire [7:0] ctl_r;
+    wire [7:0] ctl_g;
+    wire [7:0] ctl_b;
+    assign led[0] = 1'b1;
+    assign led[1] = wen_addr[12];
+    assign led[3:2] = 2'b00;
+    viexo_fontrom r(
+        .aclk(aclk),
+        .pclk(pclk),
+        .aresetn(aresetn),
+        .x(x),
+        .y(y),
+        .wen(wen_addr[12]),
+        .wputhere(wen_addr[11:0]),
+        .wput_c(wch),
+        .red(ctl_r),
+        .grn(ctl_g),
+        .blu(ctl_b)
+    );
     viexo_paint p(
         .aclk(pclk),
         .aresetn(aresetn),
         .hblank(hblank),
         .vblank(vblank),
+        .x(x),
+        .y(y),
         .hsync(hsync),
         .vsync(vsync));
     viexo_tmds t0(
         .aclk(tclk),
         .aresetn(aresetn),
         .c({vsync, ~hsync}),
-        .d(8'h00),
+        .d(ctl_b),
         .de(~(hblank | vblank)),
         .channel(tmds[0]));
     viexo_tmds t1(
         .aclk(tclk),
         .aresetn(aresetn),
         .c(2'b00),
-        .d(8'h00),
+        .d(ctl_g),
         .de(~(hblank | vblank)),
         .channel(tmds[1]));
     viexo_tmds t2(
         .aclk(tclk),
         .aresetn(aresetn),
         .c(2'b00),
-        .d(8'h00),
+        .d(ctl_r),
         .de(~(hblank | vblank)),
         .channel(tmds[2]));
         

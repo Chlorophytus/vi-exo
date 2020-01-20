@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 3.15)
-set(CMAKE_CXX_STANDARD 14)
-find_package(verilator REQUIRED)
-include(${VERILATOR_ROOT}/verilator-config.cmake)
-add_executable(viexo src/viexo.cpp)
-file(GLOB RTL_SOURCES "../viexo_rtl/*")
-verilate(viexo SOURCES ../viexo_zynq.v ${RTL_SOURCES})
